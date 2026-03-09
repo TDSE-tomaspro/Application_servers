@@ -18,9 +18,8 @@ El objetivo del proyecto es demostrar cómo construir una versión mínima de un
 6. Ejecución del servidor
 7. Uso del framework
 8. Aplicación de ejemplo
-9. Pruebas realizadas
-10. Limitaciones actuales
-11. Evidencia para la entrega
+9. Validación funcional
+10. Evidencia para la entrega
 
 ## 1. Descripción general
 
@@ -64,7 +63,6 @@ La clase principal del framework es `MicroSpringBoot`. Allí se concentran las r
 | `RequestParam` | Enlaza parámetros del query string con argumentos del método del controlador. |
 | `HelloController` | Controlador de ejemplo con endpoints básicos y una respuesta HTML simple. |
 | `GreetingController` | Controlador que demuestra el uso de `@RequestParam` y el manejo de estado con `AtomicLong`. |
-| `MicroSpringBootTest` | Prueba automática de descubrimiento de controladores y carga por argumentos. |
 
 ### Flujo de atención de una solicitud
 
@@ -85,52 +83,40 @@ La implementación evita librerías externas de servidor web. Todo el manejo HTT
 ```text
 Application_servers/
 ├── pom.xml
+├── mvnw
+├── mvnw.cmd
 ├── README.md
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── org/example/demo/
-│   │   │       ├── DemoApplication.java
-│   │   │       ├── MicroSpringBoot.java
-│   │   │       ├── RestController.java
-│   │   │       ├── GetMapping.java
-│   │   │       ├── RequestParam.java
-│   │   │       ├── HelloController.java
-│   │   │       ├── GreetingController.java
-│   │   │       ├── InvokeMain.java
-│   │   │       └── ReflexionNavigator.java
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       └── static/
-│   │           ├── index.html
-│   │           └── images/
-│   │               └── server.png
-│   └── test/
-│       └── java/
-│           └── org/example/demo/
-│               └── MicroSpringBootTest.java
-└── target/
+└── src/
+	├── main/
+	│   ├── java/
+	│   │   └── org/example/demo/
+	│   │       ├── MicroSpringBoot.java
+	│   │       ├── RestController.java
+	│   │       ├── GetMapping.java
+	│   │       ├── RequestParam.java
+	│   │       ├── HelloController.java
+	│   │       └── GreetingController.java
+	│   └── resources/
+	│       ├── application.properties
+	│       └── static/
+	│           ├── index.html
+	│           └── images/
+	│               └── server.png
 ```
 
 ## 5. Requisitos y compilación
 
 ### Requisitos
 
-- Java 17 o superior.
+- Java 21 o superior.
 - Maven Wrapper incluido en el proyecto.
 
-### Compilar y validar
+### Compilar
 
 Desde la raíz del proyecto en PowerShell:
 
 ```powershell
-.\mvnw.cmd test
-```
-
-Para generar el artefacto compilado:
-
-```powershell
-.\mvnw.cmd package
+\.\mvnw.cmd package
 ```
 
 ## 6. Ejecución del servidor
@@ -242,24 +228,7 @@ La aplicación de ejemplo incluye rutas dinámicas y recursos estáticos.
 - `http://localhost:35000/greeting?name=Pedro`
 - `http://localhost:35000/images/server.png`
 
-## 9. Pruebas realizadas
-
-Se realizaron dos tipos de validación: automática y funcional manual.
-
-### Pruebas automáticas con JUnit
-
-La clase `MicroSpringBootTest` valida:
-
-- Que los nombres de controladores pasados por línea de comandos se extraen correctamente.
-- Que el escaneo automático del classpath encuentra las clases anotadas con `@RestController`.
-
-Ejecución:
-
-```powershell
-.\mvnw.cmd test
-```
-
-### Validación funcional manual
+## 9. Validación funcional
 
 Se verificó localmente que:
 
@@ -278,7 +247,7 @@ Invoke-WebRequest -UseBasicParsing "http://localhost:35000/greeting?name=Tomas" 
 
 ## 10. Evidencia para la entrega
 
-- Captura de la compilación exitosa con `./mvnw.cmd test`.
+- Captura de la compilación exitosa con `./mvnw.cmd package`.
 - Captura de la consola mostrando el arranque del servidor.
 - Captura del navegador abriendo `http://localhost:35000/index.html`.
 - Captura de la URL `http://localhost:35000/greeting?name=TuNombre`.
