@@ -1,84 +1,85 @@
-# Micro Web Framework en Java
+# Micro Web Framework in Java
 
-### autor : tomas felipe ramirez alvarez
+### author: tomas felipe ramirez alvarez
 
 ---
 
-Proyecto desarrollado para el taller de servidores de aplicaciones en TDSE. La solución implementa un micro framework web sin dependencias externas para HTTP, construido con sockets, reflexión y anotaciones propias en Java.
+This project was developed for the Application Servers workshop in TDSE. The solution implements a micro web framework without external HTTP dependencies, built with sockets, reflection, and custom Java annotations.
 
-El objetivo del proyecto es demostrar cómo construir una versión mínima de un servidor tipo Apache y, sobre ese servidor, un framework IoC capaz de publicar servicios web definidos a partir de POJOs.
+The goal of the project is to demonstrate how to build a minimal Apache-like web server and, on top of that server, an IoC framework capable of publishing web services defined from POJOs.
 
-## Contenido
+## Contents
 
-1. Descripción general
-2. Objetivos cubiertos
-3. Arquitectura de la solución
-4. Estructura del proyecto
-5. Requisitos y compilación
-6. Ejecución del servidor
-7. Uso del framework
-8. Aplicación de ejemplo
-9. Validación funcional
-10. Evidencia para la entrega
+1. General Description
+2. Covered Objectives
+3. Solution Architecture
+4. Project Structure
+5. Requirements and Build
+6. Running the Server
+7. Framework Usage
+8. Example Application
+9. Functional Validation
+10. Delivery Evidence
+11. Conclusions
 
-## 1. Descripción general
+## 1. General Description
 
-Este proyecto implementa un servidor HTTP mínimo que:
+This project implements a minimal HTTP server that:
 
-- Escucha conexiones TCP en un puerto configurable.
-- Interpreta solicitudes HTTP `GET`.
-- Entrega respuestas dinámicas a partir de controladores Java anotados.
-- Sirve archivos estáticos desde el classpath.
-- Soporta contenido HTML y PNG.
-- Resuelve parámetros de consulta mediante anotaciones.
+- Listens for TCP connections on a configurable port.
+- Interprets HTTP `GET` requests.
+- Returns dynamic responses from annotated Java controllers.
+- Serves static files from the classpath.
+- Supports HTML and PNG content.
+- Resolves query parameters through annotations.
 
-La aplicación fue diseñada como una base simple, entendible y académica, enfocada en mostrar el uso de reflexión en Java para descubrir componentes, inspeccionar métodos e invocarlos dinámicamente.
+The application was designed as a simple, understandable, and academic prototype focused on showing how Java reflection can be used to discover components, inspect methods, and invoke them dynamically.
 
-## 2. Objetivos cubiertos
+## 2. Covered Objectives
 
-Con esta implementación se cumplen los requisitos técnicos principales del taller:
+This implementation covers the main technical requirements of the workshop:
 
-- Servidor web propio en Java.
-- Soporte de páginas HTML.
-- Soporte de imágenes PNG.
-- Framework IoC mínimo para construir aplicaciones web a partir de POJOs.
-- Uso de anotaciones `@RestController`, `@GetMapping` y `@RequestParam`.
-- Carga explícita de beans por línea de comandos.
-- Descubrimiento automático de componentes al explorar el classpath.
-- Aplicación web de ejemplo desplegable sobre el framework.
-- Atención de múltiples solicitudes de forma no concurrente.
-- Estructura y ciclo de vida manejados con Maven.
+- Custom web server in Java.
+- HTML page support.
+- PNG image support.
+- Minimal IoC framework for building web applications from POJOs.
+- Support for the `@RestController`, `@GetMapping`, and `@RequestParam` annotations.
+- Explicit bean loading from the command line.
+- Automatic component discovery by scanning the classpath.
+- Example web application deployed on top of the framework.
+- Sequential handling of multiple non-concurrent requests.
+- Maven-based project structure and lifecycle.
 
-## 3. Arquitectura de la solución
+## 3. Solution Architecture
 
-La clase principal del framework es `MicroSpringBoot`. Allí se concentran las responsabilidades esenciales del servidor y del despachador de rutas.
+The main framework class is `MicroSpringBoot`. It contains the core responsibilities of the server and the route dispatcher.
 
-### Componentes principales
+### Main Components
 
-| Componente | Responsabilidad |
+| Component | Responsibility |
 | --- | --- |
-| `MicroSpringBoot` | Inicia el servidor, descubre controladores, registra rutas, procesa solicitudes HTTP y sirve archivos estáticos. |
-| `RestController` | Marca una clase como componente web administrado por el framework. |
-| `GetMapping` | Declara la URI asociada a un método HTTP GET. |
-| `RequestParam` | Enlaza parámetros del query string con argumentos del método del controlador. |
-| `HelloController` | Controlador de ejemplo con endpoints básicos y una respuesta HTML simple. |
-| `GreetingController` | Controlador que demuestra el uso de `@RequestParam` y el manejo de estado con `AtomicLong`. |
+| `MicroSpringBoot` | Starts the server, discovers controllers, registers routes, processes HTTP requests, and serves static files. |
+| `RestController` | Marks a class as a web component managed by the framework. |
+| `GetMapping` | Declares the URI associated with an HTTP GET method. |
+| `RequestParam` | Binds query string parameters to controller method arguments. |
+| `HelloController` | Example controller with basic endpoints and a simple HTML response. |
+| `GreetingController` | Controller that demonstrates the use of `@RequestParam` and state handling with `AtomicLong`. |
 
-### Flujo de atención de una solicitud
+### Request Handling Flow
 
-1. El servidor abre un `ServerSocket` en el puerto configurado.
-2. Se acepta una conexión entrante.
-3. Se lee la primera línea HTTP y se extraen método, ruta y query string.
-4. Si la ruta corresponde a un `@GetMapping`, el framework invoca el método del POJO por reflexión.
-5. Si la ruta no es dinámica, se intenta localizar un recurso estático dentro de `src/main/resources/static`.
-6. Se escribe la respuesta HTTP con `Content-Type`, `Content-Length` y el cuerpo correspondiente.
-7. La conexión se cierra y el servidor espera la siguiente solicitud.
+1. The server opens a `ServerSocket` on the configured port.
+2. An incoming connection is accepted.
+3. The first HTTP line is read and the method, path, and query string are extracted.
+4. If the path matches a `@GetMapping`, the framework invokes the POJO method through reflection.
+5. If the path is not dynamic, a static resource is searched inside `src/main/resources/static`.
+6. The HTTP response is written with `Content-Type`, `Content-Length`, and the corresponding body.
+7. The connection is closed and the server waits for the next request.
 
-### Idea de diseño
+### Design Idea
 
-La implementación evita librerías externas de servidor web. Todo el manejo HTTP se realiza con clases estándar de Java, lo que permite ver con claridad cómo se construye un framework web desde cero.
+The implementation avoids external web server libraries. All HTTP handling is performed with standard Java classes, making it easier to understand how a web framework can be built from scratch.
 
-## 4. Estructura del proyecto
+## 4. Project Structure
 
 ```text
 Application_servers/
@@ -104,60 +105,60 @@ Application_servers/
 	│               └── server.png
 ```
 
-## 5. Requisitos y compilación
+## 5. Requirements and Build
 
-### Requisitos
+### Requirements
 
-- Java 21 o superior.
-- Maven Wrapper incluido en el proyecto.
+- Java 21 or higher.
+- Maven Wrapper included in the project.
 
-### Compilar
+### Build
 
-Desde la raíz del proyecto en PowerShell:
+From the project root in PowerShell:
 
 ```powershell
-\.\mvnw.cmd package
+.\mvnw.cmd package
 ```
 
-## 6. Ejecución del servidor
+## 6. Running the Server
 
-### Ejecución normal con descubrimiento automático
+### Standard execution with automatic controller discovery
 
 ```powershell
 java -cp target/classes org.example.demo.MicroSpringBoot
 ```
 
-El servidor inicia en el puerto `35000` y deja disponible la aplicación en:
+The server starts on port `35000` and makes the application available at:
 
 ```text
 http://localhost:35000/index.html
 ```
 
-### Ejecución con carga explícita de controladores
+### Execution with explicit controller loading
 
-Esta modalidad cumple la sugerencia de una primera versión donde los POJOs se pasan por línea de comandos:
+This mode satisfies the suggested first version where POJOs are passed from the command line:
 
 ```powershell
 java -cp target/classes org.example.demo.MicroSpringBoot org.example.demo.HelloController org.example.demo.GreetingController
 ```
 
-### Puerto configurable
+### Configurable port
 
-El puerto por defecto está definido en `src/main/resources/application.properties`.
+The default port is defined in `src/main/resources/application.properties`.
 
-También se puede modificar desde consola:
+It can also be changed from the command line:
 
 ```powershell
 java -cp target/classes org.example.demo.MicroSpringBoot --port=8080
 ```
 
-## 7. Uso del framework
+## 7. Framework Usage
 
-El framework expone un modelo basado en anotaciones simples.
+The framework exposes a simple annotation-based model.
 
 ### `@RestController`
 
-Indica que una clase debe ser detectada por el framework como componente web.
+Indicates that a class must be detected by the framework as a web component.
 
 ```java
 @RestController
@@ -167,7 +168,7 @@ public class HelloController {
 
 ### `@GetMapping`
 
-Publica un método sobre una URI HTTP GET. El método debe retornar `String`.
+Publishes a method on an HTTP GET URI. The method must return a `String`.
 
 ```java
 @GetMapping("/hello")
@@ -178,47 +179,47 @@ public String helloWorld() {
 
 ### `@RequestParam`
 
-Obtiene un parámetro de la URL. Puede tener valor por defecto.
+Obtains a parameter from the URL. It may have a default value.
 
 ```java
 @GetMapping("/greeting")
 public String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-	return "Hola " + name;
+	return "Hello " + name;
 }
 ```
 
-### Qué hace internamente el framework
+### What the framework does internally
 
-- Inspecciona el directorio de clases compiladas.
-- Identifica clases anotadas con `@RestController`.
-- Instancia cada controlador con su constructor vacío.
-- Examina métodos anotados con `@GetMapping`.
-- Registra cada ruta en un mapa interno.
-- Al llegar una solicitud, invoca por reflexión el método correspondiente.
-- Si el método tiene parámetros, los resuelve desde el query string usando `@RequestParam`.
+- Scans the compiled classes directory.
+- Identifies classes annotated with `@RestController`.
+- Instantiates each controller using its empty constructor.
+- Inspects methods annotated with `@GetMapping`.
+- Registers each route in an internal map.
+- When a request arrives, invokes the corresponding method through reflection.
+- If the method has parameters, resolves them from the query string using `@RequestParam`.
 
-## 8. Aplicación de ejemplo
+## 8. Example Application
 
-La aplicación de ejemplo incluye rutas dinámicas y recursos estáticos.
+The example application includes dynamic routes and static resources.
 
-### Endpoints dinámicos
+### Dynamic Endpoints
 
-| Endpoint | Descripción | Ejemplo de respuesta |
+| Endpoint | Description | Example response |
 | --- | --- | --- |
-| `GET /` | Página HTML generada por controlador | Documento HTML simple |
-| `GET /hello` | Saludo de prueba | `Hello World` |
-| `GET /pi` | Valor de PI | `PI: 3.141592653589793` |
-| `GET /greeting` | Saludo con valor por defecto | `Hola World (#1)` |
-| `GET /greeting?name=Tomas` | Saludo con parámetro | `Hola Tomas (#2)` |
+| `GET /` | HTML page generated by the controller | Simple HTML document |
+| `GET /hello` | Test greeting | `Hello World` |
+| `GET /pi` | PI value | `PI: 3.141592653589793` |
+| `GET /greeting` | Greeting with default value | `Hola World (#1)` |
+| `GET /greeting?name=Tomas` | Greeting with parameter | `Hola Tomas (#2)` |
 
-### Recursos estáticos
+### Static Resources
 
-| Recurso | Tipo |
+| Resource | Type |
 | --- | --- |
 | `GET /index.html` | `text/html` |
 | `GET /images/server.png` | `image/png` |
 
-### Enlaces útiles para probar en navegador
+### Useful links for browser testing
 
 - `http://localhost:35000/`
 - `http://localhost:35000/index.html`
@@ -228,15 +229,15 @@ La aplicación de ejemplo incluye rutas dinámicas y recursos estáticos.
 - `http://localhost:35000/greeting?name=Pedro`
 - `http://localhost:35000/images/server.png`
 
-## 9. Validación funcional
+## 9. Functional Validation
 
-Se verificó localmente que:
+It was verified locally that:
 
-- `GET /greeting?name=Tomas` responde correctamente usando `@RequestParam`.
-- `GET /index.html` retorna `Content-Type: text/html; charset=UTF-8`.
-- `GET /images/server.png` retorna `Content-Type: image/png`.
+- `GET /greeting?name=Tomas` responds correctly using `@RequestParam`.
+- `GET /index.html` returns `Content-Type: text/html; charset=UTF-8`.
+- `GET /images/server.png` returns `Content-Type: image/png`.
 
-Ejemplos en PowerShell:
+Examples in PowerShell:
 
 ```powershell
 Invoke-WebRequest -UseBasicParsing http://localhost:35000/hello | Select-Object -ExpandProperty Content
@@ -245,18 +246,31 @@ Invoke-WebRequest -UseBasicParsing "http://localhost:35000/greeting?name=Tomas" 
 (Invoke-WebRequest -UseBasicParsing http://localhost:35000/images/server.png).Headers['Content-Type']
 ```
 
-## 10. Evidencia para la entrega
+## 10. Delivery Evidence
 
-- Captura de la compilación exitosa con `./mvnw.cmd package`.
-    - ![alt text](src/main/resources/static/images/1.jpg) 
-      
-- Captura de la consola mostrando el arranque del servidor.
-    - ![alt text](src/main/resources/static/images/2.jpg)
-- Captura del navegador abriendo `http://localhost:35000/index.html`.
-    - ![alt text](src/main/resources/static/images/3.jpg)
-- Captura de la URL `http://localhost:35000/greeting?name=TuNombre`.
-    - ![alt text](src/main/resources/static/images/4.jpg)
-    - ![alt text](src/main/resources/static/images/5.jpg)
-    - ![alt text](src/main/resources/static/images/6.jpg) 
-- Evidencia del despliegue en AWS y acceso correcto a la aplicación.
+- Screenshot of the successful build with `./mvnw.cmd package`.
+	- ![alt text](src/images/1.jpg)
 
+- Screenshot of the console showing server startup.
+	- ![alt text](src/images/2.jpg)
+- Screenshot of the browser opening `http://localhost:35000/index.html`.
+	- ![alt text](src/images/3.jpg)
+- Screenshot of the URL `http://localhost:35000/greeting?name=YourName`.
+	- ![alt text](src/images/4.jpg)
+	- ![alt text](src/images/5.jpg)
+	- ![alt text](src/images/6.jpg)
+- Evidence of deployment on AWS and successful application access.
+	- ![alt text](src/images/7.jpg)
+	- ![alt text](src/images/8.jpg)
+	- ![alt text](src/images/9.jpg)
+	- ![alt text](src/images/10.jpg)
+
+## 11. Conclusions
+
+1. It was possible to build a functional web server in Java using only sockets, without relying on external HTTP frameworks.
+
+2. The use of reflection and annotations made it possible to implement a minimal IoC framework capable of discovering controllers, registering routes, and invoking methods dynamically.
+
+3. The example application demonstrates that the server can deliver both dynamic content and static resources, meeting the HTML and PNG support requested in the workshop statement.
+
+4. The project confirms that with a simple architecture and Maven as the build foundation, it is possible to develop a clear, extensible prototype aligned with the academic objectives of the workshop.
